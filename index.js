@@ -3,17 +3,13 @@
   let editor;
   require(['vs/editor/editor.main'], function () {
     monaco.languages.typescript.javascriptDefaults.addExtraLib(`
-/**
-  * @property {string} input  -取得輸入框的值
-  * @property {string} output -設定或取得輸出框的值
-  */
-  export const gui:{/*取得輸入框的值*/input:string,/*設定或取得輸出框的值*/output:string}
+  export const gui:{/*${window['text'].input} */input:string,/*${window['text'].output}/output:string}
 `, 'global.d.ts');
     const container = document.getElementById('editor');
     editor = monaco.editor.create(container, {
       value: `
-/* gui.input 取得輸入框的值 
-   gui.output 設定或取得輸出框的值
+/* gui.input ${window['text'].input} 
+   gui.output ${window['text'].output}
 */
 gui.output = \'hello world\'`,
       language: 'javascript',
@@ -63,7 +59,7 @@ gui.output = \'hello world\'`,
             eLine = parseInt(er[1], 10);
             eCol = parseInt(er[2], 10);
           } else {
-            errMsg = `***使用chrome/edge已獲得更詳細的錯誤訊息***`
+            errMsg = window['text'].warn
           }
           if (eLine) {
             const sp = sc.split('\n').map((v, i) => padLeft(i + 1, 4) + '. ' + v);

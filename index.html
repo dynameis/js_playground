@@ -11,28 +11,30 @@
 
 <body>
   <div class="editor">
-    <h2>程式碼</h2>
+    <h2 altLang="Code">程式碼</h2>
     <div id="editor"></div>
   </div>
   <div class="console-tools">
     <div class="in">
-      <h2>輸入</h2>
+      <h2 altLang="Input">輸入</h2>
       <div class="toolbar">
         <input id="input" type="text" />
-        <button id="execute" type="button">執行</button>
+        <button id="execute" type="button" altLang="Run">執行</button>
       </div>
     </div>
     <div class="out">
-      <h2>輸出</h2>
+      <h2 altLang="Output">輸出</h2>
       <pre id="output" class="display"></pre>
     </div>
     <div class="er">
-      <h2>錯誤</h2>
+      <h2 altLang="Errors">錯誤</h2>
       <pre id="error" class="display"></pre>
     </div>
   </div>
   <script src="monaco-editor/min/vs/loader.js"></script>
+  <script src="lang.js"></script>
   <script src="index.js"></script>
+
 </body>
 
 </html>
