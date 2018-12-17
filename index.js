@@ -4,6 +4,7 @@
    gui.output ${window['text'].output}
 */
 gui.output = \'hello world\'`;
+  const customEnvVarDef = `declare const gui:{input:string,output:string}`;
   const saveButtons = document.querySelectorAll('button[save]');
   let currentSave;
   const inputElem = document.querySelector('#input');
@@ -12,9 +13,54 @@ gui.output = \'hello world\'`;
   const executeButton = document.querySelector('#execute');
   const clearButton = document.querySelector('button[clear]');
   const errorContainer = document.querySelector('.errors>ul');
+  const exceptionDisplayRange = 5;
   let t2;
   let t;
-  const showErrors = (errors) => {
+  let editor;
+  let loading = false;
+  const createEnvVar = (inputElem, outputElem) => {
+    const gui = {};
+    Object.defineProperty(gui, 'inpuit', {
+      get: () => inputElem.value
+    });
+    Object.defineProperty(gui, 'output', {
+      get: () => outputElem.textContent,
+      set: value => {
+        outputElem.textContent = value;
+      }
+    });
+    return gui;
+  }
+  const setupMonaco = (customEnvVarDef) => {
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false
+    });
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES6,
+      allowNonTsExtensions: true,
+      alwaysStrict: true,
+      noUnusedParameters: true,
+      noImplicitUseStrict: true
+    });
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(customEnvVarDef, 'global.d.ts');
+  }
+  const setupAutoSave = () => {
+    editor.onDidChangeModelContent(e => {
+      if (!loading) {
+        if (t2) {
+          clearTimeout(t2);
+          t2 = undefined;
+        }
+        t2 = setTimeout(() => {
+          t2 = undefined;
+          saveCode();
+          console.log('auto saved');
+        }, 500);
+      }
+    });
+  }
+  const showIssue = (errors) => {
     errorContainer.innerHTML = '';
     errors.forEach(x => {
       const li = document.createElement('li');
@@ -23,20 +69,27 @@ gui.output = \'hello world\'`;
     });
     executeButton.disabled = errors.length > 0;
   }
-  let editor;
-
-
+  const setupCodeIssueDisplay = () => {
+    editor.onDidChangeModelDecorations(e => {
+      if (t) {
+        clearTimeout(t);
+        t = undefined;
+      }
+      t = setTimeout(() => {
+        t = undefined;
+        const err = monaco.editor.getModelMarkers({});
+        showIssue(err)
+      }, 100);
+    });
+  }
   const saveCode = () => localStorage.setItem(currentSave, editor.getValue());
-  let loading = false;
+
   const setValue = (v) => {
     loading = true;
     editor.setValue(v);
     setTimeout(() => loading = false);
   }
-  clearButton.addEventListener('click', e => {
-    localStorage.removeItem(currentSave);
-    setValue(defaultContent);
-  })
+
   const setSaveLoc = (loc) => {
     clearTimeout(t2);
     t2 = undefined;
@@ -52,27 +105,11 @@ gui.output = \'hello world\'`;
     document.querySelector(`button[save="${loc}"]`).setAttribute('current', '');
     localStorage.setItem('current-save', loc);
   }
-  saveButtons.forEach(b => {
-    b.addEventListener('click', e => setSaveLoc(e.target.getAttribute('save')));
-  })
 
   setSaveLoc(localStorage.getItem('current-save') || saveButtons[0].getAttribute('save'));
   require.config({ paths: { 'vs': 'monaco-editor/min/vs' } });
   require(['vs/editor/editor.main'], function () {
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: false
-    });
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ES6,
-      allowNonTsExtensions: true,
-      alwaysStrict: true,
-      noUnusedParameters: true,
-      noImplicitUseStrict: true
-    });
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(`
-  declare const gui:{input:string,output:string}
-`, 'global.d.ts');
+    setupMonaco(customEnvVarDef);
     const container = document.getElementById('editor');
     editor = monaco.editor.create(container, {
       value: localStorage.getItem(currentSave) || defaultContent,
@@ -82,47 +119,10 @@ gui.output = \'hello world\'`;
       },
       automaticLayout: true
     });
-
-
-    editor.onDidChangeModelContent(e => {
-      if (!loading) {
-        if (t2) {
-          clearTimeout(t2);
-          t2 = undefined;
-        }
-        t2 = setTimeout(() => {
-          t2 = undefined;
-          saveCode();
-          console.log('auto saved');
-        }, 500);
-      }
-    });
-
-    editor.onDidChangeModelDecorations(e => {
-      if (t) {
-        clearTimeout(t);
-        t = undefined;
-      }
-      t = setTimeout(() => {
-        t = undefined;
-        const err = monaco.editor.getModelMarkers({});
-        showErrors(err)
-      }, 100);
-    });
-
+    setupAutoSave();
+    setupCodeIssueDisplay();
   });
-
-
-  const gui = {};
-  Object.defineProperty(gui, 'inpuit', {
-    get: () => inputElem.value
-  });
-  Object.defineProperty(gui, 'output', {
-    get: () => outputElem.textContent,
-    set: value => {
-      outputElem.textContent = value;
-    }
-  });
+  const gui = createEnvVar(inputElem, outputElem);
   function padLeft(nr, n, str) {
     return Array(n - String(nr).length + 1).join(str || ' ') + nr;
   }
@@ -159,14 +159,9 @@ gui.output = \'hello world\'`;
               nl += ' ';
             }
             sp.splice(eLine, 0, nl + '     ^^^^^');
-            errMsg =
-              `      ${errMsg}\n\n` +
-              sp
-                .filter((v, i) => i > eLine - 3 && i < eLine + 3)
-                .join('\n');
+            errMsg = `${errMsg}\n\n...\n` + sp.filter((v, i) => i > eLine - exceptionDisplayRange && i < eLine + exceptionDisplayRange).join('\n') + '\n...\n';
           }
         }
-        console.error(errMsg);
         errorElem.textContent = errMsg;
       }
     } catch (ex) {
@@ -174,6 +169,13 @@ gui.output = \'hello world\'`;
     }
 
   };
+  saveButtons.forEach(b => {
+    b.addEventListener('click', e => setSaveLoc(e.target.getAttribute('save')));
+  })
+  clearButton.addEventListener('click', e => {
+    localStorage.removeItem(currentSave);
+    setValue(defaultContent);
+  })
   executeButton.addEventListener('click', excute);
   inputElem.addEventListener('keypress', e => {
     if (e.which == 13 || e.keyCode == 13) {
@@ -181,3 +183,4 @@ gui.output = \'hello world\'`;
     }
   })
 })();
+
