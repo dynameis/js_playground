@@ -1,7 +1,3 @@
-div {
-    box-sizing: border-box;
-}
-
 body {
     padding: 0;
     margin: 0 auto;
@@ -18,35 +14,30 @@ body>div {
     flex: 1;
 }
 
+.editor {
+    flex: 1;
+    height: 97%;
+}
+
 #editor {
     width: 100%;
     height: 100%;
 }
 
-.main {
+.console-tools {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.main>div {
-    display: flex;
-    flex-direction: column;
-}
-
-.in .toolbar {
-    display: flex;
+.console-tools .display {
     flex: 1;
-    flex-direction: row;
+    overflow: auto;
+    color: #aaa;
+    background-color: #2e2e2e;
 }
 
-.editor {
-    flex: 1;
-    overflow: hidden;
-    height: 100%;
-}
-
-.in .toolbar input {
+.console-tools .in .toolbar input {
     font-size: 2em;
     background-color: #2e2e2e;
     border: 1px solid #aaa;
@@ -54,7 +45,7 @@ body>div {
     flex: 8;
 }
 
-.in .toolbar button {
+.console-tools .in .toolbar button {
     flex: 2;
     background-color: #2e2e2e;
     border: 1px solid #aaa;
@@ -64,21 +55,25 @@ body>div {
     font-family: consolas, '微軟正黑體';
 }
 
-.out {
+.console-tools .out {
     flex: 1;
 }
 
-.er {
+.console-tools .er {
     flex: 1;
 }
 
-pre {
-    flex: 1;
-    overflow: auto;
-    color: #aaa;
-    background-color: #2e2e2e;
-}
-
-.er pre {
+.console-tools .er pre {
     color: red;
+}
+
+.console-tools .in .toolbar {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+}
+
+.console-tools>div {
+    display: flex;
+    flex-direction: column;
 }
