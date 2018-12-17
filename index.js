@@ -37,7 +37,7 @@ gui.output = \'hello world\'`,
     }
   });
   function padLeft(nr, n, str) {
-    return Array(n - String(nr).length + 1).join(str || '0') + nr;
+    return Array(n - String(nr).length + 1).join(str || ' ') + nr;
   }
   var excute = () => {
     console.log('code excuting..');
@@ -51,20 +51,33 @@ gui.output = \'hello world\'`,
         func(gui);
       } catch (ex) {
         let errMsg = ex.toString();
-        const er = /<anonymous>:(\d+):(\d+)/.exec(ex.stack);
-        if (er.length) {
-          const sp = sc.split('\n').map((v, i) => padLeft(i + 1, 4) + '. ' + v);
-          let nl = '';
-          for (let i = 0, c = parseInt(sp[2], 10); i < c; i++) {
-            nl += ' ';
+        let eLine, eCol;
+        if (ex.stack) {
+          if (/<anonymous>:\d+:\d+/.test(ex.stack)) {
+            //chromium
+            const er = /<anonymous>:(\d+):(\d+)/.exec(ex.stack);
+            eLine = er[1] - 2;
+            eCol = parseInt(er[2], 10);
+          } else if (/\(Function code:(\d+):(\d+)\)/.test(ex.stack)) {
+            const er = /\(Function code:(\d+):(\d+)\)/.exec(ex.stack);
+            eLine = parseInt(er[1], 10);
+            eCol = parseInt(er[2], 10);
+          } else {
+            errMsg = `***使用chrome/edge已獲得更詳細的錯誤訊息***`
           }
-          const errIndex = er[1] - 2;
-          sp.splice(errIndex, 0, nl + '  ^^^^^');
-          errMsg +=
-            '\n\n' +
-            sp
-              .filter((v, i) => i > errIndex - 3 && i < errIndex + 3)
-              .join('\n');
+          if (eLine) {
+            const sp = sc.split('\n').map((v, i) => padLeft(i + 1, 4) + '. ' + v);
+            let nl = '';
+            for (let i = 0, c = eCol; i < c; i++) {
+              nl += ' ';
+            }
+            sp.splice(eLine, 0, nl + '     ^^^^^');
+            errMsg =
+              `      ${errMsg}\n\n` +
+              sp
+                .filter((v, i) => i > eLine - 3 && i < eLine + 3)
+                .join('\n');
+          }
         }
         console.error(errMsg);
         errorElem.textContent = errMsg;
