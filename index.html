@@ -11,15 +11,32 @@
 
 <body>
   <div class="editor">
-    <h2 altLang="Code">程式碼</h2>
+    <h2 altLang="Code">
+      <span>程式碼</span>
+      <button type="button" clear class="js-pg-button">C</button>
+      <button type="button" save="save-1" class="js-pg-button memory">M1</button>
+      <button type="button" save="save-2" class="js-pg-button memory">M2</button>
+      <button type="button" save="save-3" class="js-pg-button memory">M3</button>
+      <button type="button" save="save-4" class="js-pg-button memory">M4</button>
+      <button type="button" save="save-5" class="js-pg-button memory">M5</button>
+      <button type="button" save="save-6" class="js-pg-button memory">M6</button>
+      <button type="button" save="save-7" class="js-pg-button memory">M7</button>
+      <button type="button" save="save-8" class="js-pg-button memory">M8</button>
+      <button type="button" save="save-9" class="js-pg-button memory">M9</button>
+    </h2>
     <div id="editor"></div>
+    <div class="errors">
+      <h2>程式碼錯誤</h2>
+      <ul>
+      </ul>
+    </div>
   </div>
   <div class="console-tools">
     <div class="in">
       <h2 altLang="Input">輸入</h2>
       <div class="toolbar">
         <input id="input" type="text" />
-        <button id="execute" type="button" altLang="Run">執行</button>
+        <button id="execute" type="button" class="js-pg-button" altLang="Run">執行</button>
       </div>
     </div>
     <div class="out">

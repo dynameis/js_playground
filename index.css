@@ -25,6 +25,15 @@ body>div {
     overflow: hidden;
 }
 
+.errors {
+    height: 30%;
+    overflow-y: auto;
+}
+
+.errors li {
+    color: crimson;
+}
+
 #editor {
     width: 95%;
     height: 100%;
@@ -63,12 +72,33 @@ body>div {
 
 .console-tools .in .toolbar button {
     flex: 2;
+    font-size: 2em;
+}
+
+h2 .js-pg-button {
+    height: 32px;
+    width: 32px;
+    font-size: 0.8em;
+}
+
+h2 .js-pg-button:focus {
+    outline: none;
+}
+
+.js-pg-button.memory[current] {
+    border: 1px solid chocolate;
+}
+
+.js-pg-button {
     background-color: #2e2e2e;
     border: 1px solid #aaa;
     color: #aaa;
-    font-size: 2em;
     cursor: pointer;
     font-family: consolas, '微軟正黑體';
+}
+
+.js-pg-button button:disabled {
+    opacity: .2;
 }
 
 .console-tools .out {
@@ -80,7 +110,7 @@ body>div {
 }
 
 .console-tools .er pre {
-    color: red;
+    color: crimson;
 }
 
 .console-tools .in .toolbar {
