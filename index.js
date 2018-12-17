@@ -140,13 +140,15 @@ gui.output = \'hello world\'`;
         let errMsg = ex.toString();
         let eLine, eCol;
         if (ex.stack) {
-          if (/<anonymous>:\d+:\d+/.test(ex.stack)) {
+          const ss = ex.stack.split('\n');
+          const stack = ss[ss.length - 2];
+          if (/<anonymous>:\d+:\d+/.test(stack)) {
             //chromium
-            const er = /<anonymous>:(\d+):(\d+)/.exec(ex.stack);
+            const er = /<anonymous>:(\d+):(\d+)/.exec(stack);
             eLine = er[1] - 2;
             eCol = parseInt(er[2], 10);
-          } else if (/\(Function code:(\d+):(\d+)\)/.test(ex.stack)) {
-            const er = /\(Function code:(\d+):(\d+)\)/.exec(ex.stack);
+          } else if (/\(Function code:(\d+):(\d+)\)/.test(stack)) {
+            const er = /\(Function code:(\d+):(\d+)\)/.exec(stack);
             eLine = parseInt(er[1], 10);
             eCol = parseInt(er[2], 10);
           } else {
