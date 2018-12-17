@@ -1,0 +1,60 @@
+div {
+  box-sizing: border-box;
+}
+body {
+  padding: 0;
+  margin: 0 auto;
+  display: flex;
+  height: 99vh;
+  width: 99vw;
+  background-color: rgb(28, 32, 34);
+  color: #aaa;
+  font-family: consolas, '微軟正黑體';
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.main > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.in .toolbar {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+.in .toolbar input {
+  font-size: 2em;
+  background-color: rgb(28, 32, 34);
+  border: 1px solid #aaa;
+  color: #aaa;
+  flex: 8;
+}
+.in .toolbar button {
+  flex: 2;
+  background-color: rgb(35, 39, 43);
+  border: 1px solid #aaa;
+  color: #aaa;
+  font-size: 2em;
+  cursor: pointer;
+  font-family: consolas, '微軟正黑體';
+}
+.out {
+  flex: 1;
+}
+.er {
+  flex: 1;
+}
+pre {
+  flex: 1;
+  overflow: auto;
+  color: #aaa;
+  background-color: rgb(35, 39, 43);
+}
+.er pre {
+  color: red;
+}
