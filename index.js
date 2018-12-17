@@ -2,9 +2,20 @@
   require.config({ paths: { 'vs': 'monaco-editor/min/vs' } });
   let editor;
   require(['vs/editor/editor.main'], function () {
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(`
+/**
+  * @property {string} input  -取得輸入框的值
+  * @property {string} output -設定或取得輸出框的值
+  */
+  export const gui:{/*取得輸入框的值*/input:string,/*設定或取得輸出框的值*/output:string}
+`, 'global.d.ts');
     const container = document.getElementById('editor');
     editor = monaco.editor.create(container, {
-      value: 'gui.output = \'hello world\'',
+      value: `
+/* gui.input 取得輸入框的值 
+   gui.output 設定或取得輸出框的值
+*/
+gui.output = \'hello world\'`,
       language: 'javascript',
       theme: 'vs-dark', minimap: {
         enabled: false
@@ -48,7 +59,7 @@
             nl += ' ';
           }
           const errIndex = er[1] - 2;
-          sp.splice(errIndex, 0, nl + '    ^^^^^');
+          sp.splice(errIndex, 0, nl + '  ^^^^^');
           errMsg +=
             '\n\n' +
             sp
