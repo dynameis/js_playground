@@ -58,6 +58,7 @@ body>div {
     border: 1px solid #aaa;
     color: #aaa;
     flex: 8;
+    width: 95%;
 }
 
 .console-tools .in .toolbar button {
