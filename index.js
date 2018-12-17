@@ -18,9 +18,9 @@ gui.output = \'hello world\'`;
   let t;
   let editor;
   let loading = false;
-  const createEnvVar = (inputElem, outputElem) => {
+  const createEnvVar = () => {
     const gui = {};
-    Object.defineProperty(gui, 'inpuit', {
+    Object.defineProperty(gui, 'input', {
       get: () => inputElem.value
     });
     Object.defineProperty(gui, 'output', {
@@ -122,7 +122,7 @@ gui.output = \'hello world\'`;
     setupAutoSave();
     setupCodeIssueDisplay();
   });
-  const gui = createEnvVar(inputElem, outputElem);
+  const gui = createEnvVar();
   function padLeft(nr, n, str) {
     return Array(n - String(nr).length + 1).join(str || ' ') + nr;
   }
