@@ -11,9 +11,7 @@
             warn: '***use chrome/edge for more detail infomation***'
         }
         document.querySelectorAll('[altLang]').forEach(elem => {
-            if (elem) {
-                elem.textContent = elem.getAttribute('altLang');
-            }
+            elem.textContent = elem.getAttribute('altLang');
         });
     }
 })();
