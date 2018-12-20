@@ -23,7 +23,7 @@ gui.output = \'hello world\'`;
   if (location.hash && location.hash.length > 5) {
     try {
       const json = location.hash.replace(/^#/, '');
-      const urlObj = JSON.parse(decodeURIComponent(json));
+      const urlObj = JSON.parse(atob(json));
       if (urlObj.code) {
         urlParameter = urlObj;
       }
@@ -199,7 +199,7 @@ gui.output = \'hello world\'`;
     setValue(defaultContent);
   });
   shareButton.addEventListener('click', e => {
-    window.open(`//${location.host}${location.pathname}#` + encodeURIComponent(JSON.stringify({
+    window.open(`//${location.host}${location.pathname}#` + btoa(JSON.stringify({
       code: editor.getValue(),
       input: inputElem.value
     })));
