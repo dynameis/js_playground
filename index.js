@@ -1,4 +1,19 @@
 (() => {
+  function b64EncodeUnicode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+      function toSolidBytes(match, p1) {
+        return String.fromCharCode('0x' + p1);
+      }));
+  }
+  function b64DecodeUnicode(str) {
+    // Going backwards: from bytestream, to percent-encoding, to original string.
+    return decodeURIComponent(atob(str).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  }
   const defaultContent = `
 /* gui.input ${window['text'].input} 
    gui.output ${window['text'].output}
@@ -23,7 +38,7 @@ gui.output = \'hello world\'`;
   if (location.hash && location.hash.length > 5) {
     try {
       const json = location.hash.replace(/^#/, '');
-      const urlObj = JSON.parse(atob(json));
+      const urlObj = JSON.parse(b64DecodeUnicode(json));
       if (urlObj.code) {
         urlParameter = urlObj;
       }
@@ -199,7 +214,7 @@ gui.output = \'hello world\'`;
     setValue(defaultContent);
   });
   shareButton.addEventListener('click', e => {
-    window.open(`//${location.host}${location.pathname}#` + btoa(JSON.stringify({
+    window.open(`//${location.host}${location.pathname}#` + b64EncodeUnicode(JSON.stringify({
       code: editor.getValue(),
       input: inputElem.value
     })));
