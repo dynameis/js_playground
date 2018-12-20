@@ -45,7 +45,6 @@ gui.output = \'hello world\'`;
     } catch (ex) {
       console.error('url obj parse failure', ex);
     }
-    location.hash = '';
   }
   const createEnvVar = () => {
     const gui = {};
