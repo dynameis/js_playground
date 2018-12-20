@@ -12,12 +12,25 @@ gui.output = \'hello world\'`;
   const errorElem = document.querySelector('#error');
   const executeButton = document.querySelector('#execute');
   const clearButton = document.querySelector('button[clear]');
+  const shareButton = document.querySelector('button[share]');
   const errorContainer = document.querySelector('.errors>ul');
   const exceptionDisplayRange = 5;
   let t2;
   let t;
   let editor;
   let loading = false;
+  let urlParameter;
+  if (location.hash && location.hash.length > 5) {
+    try {
+      const json = location.hash.replace(/^#/, '');
+      const urlObj = JSON.parse(decodeURIComponent(json));
+      if (urlObj.code) {
+        urlParameter = urlObj;
+      }
+    } catch (ex) {
+      console.error('url obj parse failure', ex);
+    }
+  }
   const createEnvVar = () => {
     const gui = {};
     Object.defineProperty(gui, 'input', {
@@ -105,8 +118,15 @@ gui.output = \'hello world\'`;
     document.querySelector(`button[save="${loc}"]`).setAttribute('current', '');
     localStorage.setItem('current-save', loc);
   }
-
-  setSaveLoc(localStorage.getItem('current-save') || saveButtons[0].getAttribute('save'));
+  if (urlParameter) {
+    localStorage.setItem('save-temp', urlParameter.code);
+    if (urlParameter.input) {
+      inputElem.value = urlParameter.input;
+    }
+    setSaveLoc('save-temp');
+  } else {
+    setSaveLoc(localStorage.getItem('current-save') || saveButtons[0].getAttribute('save'));
+  }
   require.config({ paths: { 'vs': 'monaco-editor/min/vs' } });
   require(['vs/editor/editor.main'], function () {
     setupMonaco(customEnvVarDef);
@@ -177,7 +197,13 @@ gui.output = \'hello world\'`;
   clearButton.addEventListener('click', e => {
     localStorage.removeItem(currentSave);
     setValue(defaultContent);
-  })
+  });
+  shareButton.addEventListener('click', e => {
+    window.open(`/${location.pathname}#` + encodeURIComponent(JSON.stringify({
+      code: editor.getValue(),
+      input: inputElem.value
+    })));
+  });
   executeButton.addEventListener('click', excute);
   inputElem.addEventListener('keypress', e => {
     if (e.which == 13 || e.keyCode == 13) {

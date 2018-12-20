@@ -81,6 +81,10 @@ h2 .js-pg-button {
     font-size: 0.8em;
 }
 
+h2 .js-pg-button[share] {
+    width: initial;
+}
+
 h2 .js-pg-button:focus {
     outline: none;
 }
