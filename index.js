@@ -207,7 +207,10 @@ gui.output = \'hello world\'`;
 
   };
   saveButtons.forEach(b => {
-    b.addEventListener('click', e => setSaveLoc(e.target.getAttribute('save')));
+    b.addEventListener('click', e => {
+      location.hash = '';
+      setSaveLoc(e.target.getAttribute('save'));
+    });
   })
   clearButton.addEventListener('click', e => {
     localStorage.removeItem(currentSave);
