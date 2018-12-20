@@ -199,7 +199,7 @@ gui.output = \'hello world\'`;
     setValue(defaultContent);
   });
   shareButton.addEventListener('click', e => {
-    window.open(`/${location.pathname}#` + encodeURIComponent(JSON.stringify({
+    window.open(`//${location.host}${location.pathname}#` + encodeURIComponent(JSON.stringify({
       code: editor.getValue(),
       input: inputElem.value
     })));
