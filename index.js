@@ -89,6 +89,7 @@ gui.output = \'hello world\'`;
   }
   const showIssue = (errors) => {
     errorContainer.innerHTML = '';
+    errorContainer.classList.toggle('has-error', errors.length > 0);
     errors.forEach(x => {
       const li = document.createElement('li');
       li.textContent = x.message;
