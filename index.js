@@ -1,4 +1,5 @@
 (() => {
+  'use strict'
   function b64EncodeUnicode(str) {
     // first we use encodeURIComponent to get percent-encoded UTF-8,
     // then we convert the percent encodings into raw bytes which
@@ -60,12 +61,14 @@ gui.output = \'hello world\'`;
     return gui;
   }
   const setupMonaco = (customEnvVarDef) => {
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false
+    });
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.Latest,
       allowNonTsExtensions: true,
-      alwaysStrict: true,
-      noUnusedParameters: true,
-      noImplicitUseStrict: true
+      allowJs: true
     });
     monaco.languages.typescript.javascriptDefaults.addExtraLib(customEnvVarDef, 'global.d.ts');
   }
@@ -91,7 +94,6 @@ gui.output = \'hello world\'`;
       li.textContent = x.message;
       errorContainer.appendChild(li);
     });
-    executeButton.disabled = errors.length > 0;
   }
   const setupCodeIssueDisplay = () => {
     editor.onDidChangeModelDecorations(e => {
@@ -164,7 +166,7 @@ gui.output = \'hello world\'`;
     const sc = editor.getValue();
     let func;
     try {
-      func = new Function('gui', sc);
+      func = new Function('gui', `'use strict'\n${sc}`);
       try {
         func(gui);
       } catch (ex) {
