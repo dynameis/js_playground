@@ -60,12 +60,8 @@ gui.output = \'hello world\'`;
     return gui;
   }
   const setupMonaco = (customEnvVarDef) => {
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: false
-    });
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ES6,
+      target: monaco.languages.typescript.ScriptTarget.Latest,
       allowNonTsExtensions: true,
       alwaysStrict: true,
       noUnusedParameters: true,
