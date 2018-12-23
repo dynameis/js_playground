@@ -161,13 +161,12 @@ gui.output = \'hello world\'`;
     return Array(n - String(nr).length + 1).join(str || ' ') + nr;
   }
   var excute = () => {
-    console.log('code excuting..');
     gui.output = '';
     errorElem.textContent = '';
     const sc = editor.getValue();
     let func;
     try {
-      func = new Function('gui', `'use strict'\n${sc}`);
+      func = new Function('gui', `console.info('click to debug --------------->>>>')\n${sc}`);
       try {
         func(gui);
       } catch (ex) {
