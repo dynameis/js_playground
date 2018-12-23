@@ -163,10 +163,10 @@ gui.output = \'hello world\'`;
   var excute = () => {
     gui.output = '';
     errorElem.textContent = '';
-    const sc = editor.getValue();
+    const sc = `console.info('click to debug --------------->>>>')\n${editor.getValue()}`;
     let func;
     try {
-      func = new Function('gui', `console.info('click to debug --------------->>>>')\n${sc}`);
+      func = new Function('gui', sc);
       try {
         func(gui);
       } catch (ex) {
