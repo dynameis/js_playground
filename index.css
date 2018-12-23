@@ -30,7 +30,7 @@ body>div {
     overflow-y: auto;
 }
 
-.errors:not(.has-error) {
+.errors ul:not(.has-error) {
     display: none;
 }
 
