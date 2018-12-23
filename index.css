@@ -30,10 +30,6 @@ body>div {
     overflow-y: auto;
 }
 
-.errors ul:not(.has-error) {
-    display: none;
-}
-
 .errors li {
     color: crimson;
 }
